@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Mobile Interativo</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonte Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            appBg: '#090909',
+            cardBg: '#121212',
+            cardBorder: '#1f1f1f',
+            textMuted: '#737373',
+            navBg: '#141414',
+            navPill: '#222222',
+            toggleTrack: '#525252',
+            toggleTrackActive: '#e5e5e5',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-neutral-950 text-white font-sans min-h-[100dvh] w-full flex items-center justify-center p-0 sm:p-4 select-none antialiased overflow-hidden">
+
+  <!-- Container Principal Estilo Smartphone / App (Tela cheia no celular / Proporção 9:16 em desktop) -->
+  <main class="w-screen sm:w-auto h-[100dvh] sm:h-[840px] sm:aspect-[9/16] max-w-none bg-appBg sm:rounded-[38px] sm:border sm:border-neutral-800/80 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+
+    <!-- Tela de Bloqueio por Key ao Entrar no Aplicativo -->
+    <div id="key-screen" class="absolute inset-0 z-50 bg-appBg flex flex-col items-center justify-center px-6">
+      <div class="w-full max-w-[330px] bg-cardBg border border-cardBorder rounded-[24px] p-6 shadow-2xl text-center">
+        <div class="w-12 h-12 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mx-auto mb-4">
+          <i class="fa-solid fa-key text-white text-[18px]"></i>
+        </div>
+        <h1 class="text-[18px] font-extrabold tracking-wide uppercase text-white mb-1">Acesso Restrito</h1>
+        <p class="text-[12.5px] text-textMuted mb-5">Digite a key de acesso para entrar no painel</p>
+
+        <input
+          id="key-input"
+          type="text"
+          autocomplete="off"
+          placeholder="Insira sua key..."
+          onkeydown="if(event.key === 'Enter') verifyKey()"
+          class="w-full bg-[#0c0c0c] border border-neutral-800 focus:border-neutral-500 rounded-[14px] px-4 py-3 text-[13.5px] text-white placeholder-neutral-600 outline-none transition-colors mb-2.5 text-center tracking-wide"
+        />
+
+        <p id="key-error" class="hidden text-[12px] text-red-400 font-medium mb-3">
+          Key inválida. Tente novamente.
+        </p>
+
+        <button
+          type="button"
+          onclick="verifyKey()"
+          class="w-full py-3 px-4 rounded-[14px] bg-white hover:bg-neutral-200 text-black font-bold text-[13.5px] tracking-wide uppercase transition-all active:scale-[0.98]"
+        >
+          Entrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Área de Conteúdo Rolável -->
+    <div class="flex-1 px-5 pt-6 pb-28 overflow-y-auto flex flex-col">
+
+      <!-- Banner Superior (Imagem Real) -->
+      <div onclick="document.getElementById('banner-upload').click()" title="Clique para selecionar a imagem do seu aparelho" class="w-full h-40 rounded-[22px] overflow-hidden relative bg-[#111111] border border-neutral-800/80 shadow-lg mb-6 shrink-0 cursor-pointer group">
+        <img id="banner-img" src="1000102318.gif" onerror="this.onerror=null; this.src='https://placehold.co/800x360/121212/737373?text=Toque+para+inserir+sua+foto';" alt="Banner" class="w-full h-full object-cover">
+        <input type="file" id="banner-upload" accept="image/*" class="hidden" onchange="loadBannerImage(event)">
+      </div>
+
+      <!-- ABA 1: FUNÇÕES (Tela Principal da Imagem) -->
+      <section id="tab-funcoes" class="flex-1 flex flex-col">
+        <div class="flex items-center justify-between mb-3.5 px-0.5">
+          <h1 class="text-[19px] font-extrabold tracking-wide uppercase text-white">FUNÇÕES</h1>
+          <span id="active-counter" class="text-[11px] font-medium text-neutral-500 transition-opacity">0 ativas</span>
+        </div>
+
+        <!-- Lista de Cartões de Funções -->
+        <div class="space-y-3.5">
+
+          <!-- Card 1: Hs Cabeça -->
+          <div id="card-hs-cabeca" onclick="toggleCard('hs-cabeca')" class="bg-cardBg border border-cardBorder hover:border-neutral-700/80 rounded-[20px] px-4 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15.5px] font-semibold text-white leading-snug">HS pescoco</h2>
+              <p class="text-[12.5px] text-textMuted font-normal mt-0.5">Neck + Side + Up</p>
+            </div>
+            <!-- Switch / Toggle -->
+            <button type="button" role="switch" aria-checked="false" id="toggle-hs-cabeca" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+
+          <!-- Card 2: Hs Alto -->
+          <div id="card-hs-alto" onclick="toggleCard('hs-alto')" class="bg-cardBg border border-cardBorder hover:border-neutral-700/80 rounded-[20px] px-4 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15.5px] font-semibold text-white leading-snug">Hs Alto</h2>
+              <p class="text-[12.5px] text-textMuted font-normal mt-0.5">Hs up head</p>
+            </div>
+            <button type="button" role="switch" aria-checked="false" id="toggle-hs-alto" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+
+          <!-- Card 3: Hs Peito -->
+          <div id="card-hs-peito" onclick="toggleCard('hs-peito')" class="bg-cardBg border border-cardBorder hover:border-neutral-700/80 rounded-[20px] px-4 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15.5px] font-semibold text-white leading-snug">Hs Peito</h2>
+              <p class="text-[12.5px] text-textMuted font-normal mt-0.5">Hs Body (cache)</p>
+            </div>
+            <button type="button" role="switch" aria-checked="false" id="toggle-hs-peito" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+
+          <!-- Card 4: Antena Mão -->
+          <div id="card-antena-mao" onclick="toggleCard('antena-mao')" class="bg-cardBg border border-cardBorder hover:border-neutral-700/80 rounded-[20px] px-4 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15.5px] font-semibold text-white leading-snug">Antena Mão</h2>
+              <p class="text-[12.5px] text-textMuted font-normal mt-0.5">Antenna on Hand</p>
+            </div>
+            <button type="button" role="switch" aria-checked="false" id="toggle-antena-mao" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+
+          <!-- Card 5: Esp line -->
+          <div id="card-esp-line" onclick="toggleCard('esp-line')" class="bg-cardBg border border-cardBorder hover:border-neutral-700/80 rounded-[20px] px-4 py-4 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15.5px] font-semibold text-white leading-snug">Esp line</h2>
+              <p class="text-[12.5px] text-textMuted font-normal mt-0.5">Line indicator</p>
+            </div>
+            <button type="button" role="switch" aria-checked="false" id="toggle-esp-line" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ABA 2: PARTIDAS -->
+      <section id="tab-partidas" class="hidden flex-1 flex flex-col">
+        <h1 class="text-[19px] font-extrabold tracking-wide uppercase text-white mb-3.5 px-0.5">PARTIDAS</h1>
+        <div class="space-y-4">
+
+          <!-- Card: Puxar muito ou pouco + Barrinha -->
+          <div class="bg-cardBg border border-cardBorder rounded-[20px] p-4 space-y-3.5">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-[15.5px] font-semibold text-white leading-snug">Puxar mira</h2>
+                <p id="pull-mode-label" class="text-[12.5px] text-textMuted font-normal mt-0.5">Puxar pouco</p>
+              </div>
+              <span id="pull-value-badge" class="text-[12px] font-bold text-white bg-neutral-800 border border-neutral-700 px-2.5 py-1 rounded-full">25%</span>
+            </div>
+
+            <!-- Seletor rápido: Puxar pouco / Puxar muito -->
+            <div class="grid grid-cols-2 gap-2 bg-[#0c0c0c] p-1 rounded-[14px] border border-neutral-800/80">
+              <button type="button" id="btn-puxar-pouco" onclick="setPullPreset('pouco')" class="py-2 rounded-[10px] text-[12.5px] font-semibold bg-white text-black transition-all">
+                Puxar pouco
+              </button>
+              <button type="button" id="btn-puxar-muito" onclick="setPullPreset('muito')" class="py-2 rounded-[10px] text-[12.5px] font-medium text-neutral-400 hover:text-white transition-all">
+                Puxar muito
+              </button>
+            </div>
+
+            <!-- Barrinha de ajuste fino -->
+            <div class="pt-1">
+              <input id="pull-slider" type="range" min="0" max="100" value="25" oninput="updatePullSlider(this.value)" class="w-full h-2 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-white">
+              <div class="flex justify-between text-[11px] text-textMuted mt-1.5">
+                <span>Pouco (0%)</span>
+                <span>Médio (50%)</span>
+                <span>Muito (100%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão maior: Bypass Analista -->
+          <button type="button" onclick="activateBypass()" class="w-full py-4 px-5 rounded-[20px] bg-white hover:bg-neutral-200 text-black font-extrabold text-[15px] tracking-wide uppercase shadow-lg transition-all active:scale-[0.98]">
+            Bypass Analista
+          </button>
+
+          <!-- Texto explicativo logo abaixo do botão -->
+          <p class="text-[12.5px] text-textMuted leading-relaxed px-1 text-center">
+            Ao ativar isso o external e as funcoes sao automaticamente desativadas e o app se desinstala
+          </p>
+
+        </div>
+      </section>
+
+      <!-- ABA 3: CONFIG -->
+      <section id="tab-config" class="hidden flex-1 flex flex-col">
+        <h1 class="text-[19px] font-extrabold tracking-wide uppercase text-white mb-3.5 px-0.5">CONFIG</h1>
+        <div class="space-y-3">
+          <div class="bg-cardBg border border-cardBorder rounded-[20px] p-4">
+            <h2 class="text-[15px] font-semibold text-white">Perfil de Usuário</h2>
+            <p class="text-[12px] text-textMuted mt-0.5">Moura7zk • Versão v2.4</p>
+          </div>
+
+          <button onclick="resetAllToggles()" class="w-full bg-cardBg border border-cardBorder hover:border-neutral-700 rounded-[20px] px-4 py-3.5 flex items-center justify-between text-left transition-all active:scale-[0.99]">
+            <div>
+              <h2 class="text-[15px] font-semibold text-white">Desativar Todas</h2>
+              <p class="text-[12px] text-textMuted mt-0.5">Resetar todos os módulos ativos</p>
+            </div>
+            <i class="fa-solid fa-rotate-left text-neutral-400"></i>
+          </button>
+
+          <!-- Opção: Ativar flutuante -->
+          <div id="card-flutuante" onclick="toggleFloating()" class="w-full bg-cardBg border border-cardBorder hover:border-neutral-700 rounded-[20px] px-4 py-3.5 flex items-center justify-between cursor-pointer transition-all duration-200 active:scale-[0.99]">
+            <div class="pr-3">
+              <h2 class="text-[15px] font-semibold text-white">Ativar flutuante</h2>
+              <p class="text-[12px] text-textMuted mt-0.5">Exibir ícone flutuante na tela</p>
+            </div>
+            <button type="button" role="switch" aria-checked="false" id="toggle-flutuante" class="w-[50px] h-[27px] rounded-full bg-toggleTrack p-[3px] transition-colors duration-250 flex items-center shrink-0 focus:outline-none">
+              <span class="knob w-[21px] h-[21px] rounded-full bg-white shadow-md transform transition-transform duration-250 translate-x-0"></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Botão Flutuante (visível quando "Ativar flutuante" está ligado) -->
+    <button id="floating-bubble" onclick="switchTab('funcoes')" title="Voltar para Funções" class="hidden fixed sm:absolute top-1/2 right-4 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white text-black border border-neutral-300 shadow-2xl flex items-center justify-center active:scale-95 transition-transform cursor-pointer">
+      <i class="fa-solid fa-layer-group text-[18px]"></i>
+    </button>
+
+    <!-- Modal de Aviso / Termos ao ativar função -->
+    <div id="terms-modal" class="hidden fixed sm:absolute inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-center justify-center p-5">
+      <div class="bg-cardBg border border-neutral-800 rounded-[24px] p-5 w-full max-w-[330px] shadow-2xl text-center">
+        <div class="w-10 h-10 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center mx-auto mb-3">
+          <i class="fa-solid fa-triangle-exclamation text-white text-[16px]"></i>
+        </div>
+        <h3 id="modal-title" class="text-[16px] font-bold text-white mb-2">Aviso</h3>
+        <p class="text-[13px] text-neutral-300 leading-relaxed mb-5">
+          Ao ativar isso voce concorda com os termos do aplicativo e segue por sua conta e risco
+        </p>
+        <div class="flex gap-2.5">
+          <button onclick="closeTermsModal()" class="flex-1 py-2.5 px-3 rounded-[14px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-semibold text-[13px] transition-colors">
+            Cancelar
+          </button>
+          <button onclick="confirmActivation()" class="flex-1 py-2.5 px-3 rounded-[14px] bg-white hover:bg-neutral-200 text-black font-bold text-[13px] transition-colors">
+            Concordar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast de Feedback Discreto -->
+    <div id="toast" class="pointer-events-none opacity-0 transform translate-y-2 transition-all duration-300 absolute bottom-24 left-1/2 -translate-x-1/2 bg-neutral-900/95 border border-neutral-700/80 text-white text-[12px] font-medium px-4 py-2 rounded-full shadow-xl flex items-center gap-2 whitespace-nowrap z-30">
+      <span id="toast-dot" class="w-2 h-2 rounded-full bg-white"></span>
+      <span id="toast-text">Função ativada</span>
+    </div>
+
+    <!-- Barra de Navegação Inferior Flutuante (Dock Pill) -->
+    <nav class="absolute bottom-4 left-4 right-4 z-20">
+      <div class="bg-navBg border border-neutral-800/80 rounded-[34px] p-1.5 flex items-center justify-between shadow-2xl">
+
+        <!-- Item 1: Funções (Ativo por padrão com círculo/pílula) -->
+        <button id="nav-funcoes" onclick="switchTab('funcoes')" class="flex-1 py-2.5 rounded-[28px] bg-navPill text-white flex flex-col items-center justify-center gap-1 transition-all duration-200">
+          <i class="fa-solid fa-table-cells-large text-[16px]"></i>
+          <span class="text-[11px] font-semibold tracking-tight">Funções</span>
+        </button>
+
+        <!-- Item 2: Partidas -->
+        <button id="nav-partidas" onclick="switchTab('partidas')" class="flex-1 py-2.5 rounded-[28px] bg-transparent text-textMuted hover:text-neutral-300 flex flex-col items-center justify-center gap-1 transition-all duration-200">
+          <i class="fa-solid fa-gamepad text-[16px]"></i>
+          <span class="text-[11px] font-medium tracking-tight">Partidas</span>
+        </button>
+
+        <!-- Item 3: Config -->
+        <button id="nav-config" onclick="switchTab('config')" class="flex-1 py-2.5 rounded-[28px] bg-transparent text-textMuted hover:text-neutral-300 flex flex-col items-center justify-center gap-1 transition-all duration-200">
+          <i class="fa-solid fa-circle-user text-[16px]"></i>
+          <span class="text-[11px] font-medium tracking-tight">Config</span>
+        </button>
+
+      </div>
+    </nav>
+
+  </main>
+
+  <script>
+    // Key de acesso obrigatória ao abrir o aplicativo
+    const ACCESS_KEY = 'xitofullmemo';
+
+    // Valida a key digitada e libera o acesso ao painel
+    function verifyKey() {
+      try {
+        const inputEl = document.getElementById('key-input');
+        const errorEl = document.getElementById('key-error');
+        const screenEl = document.getElementById('key-screen');
+
+        if (!inputEl || !errorEl || !screenEl) return;
+
+        const enteredKey = inputEl.value.trim();
+
+        if (enteredKey === ACCESS_KEY) {
+          errorEl.classList.add('hidden');
+          screenEl.classList.add('hidden');
+          showToast('Acesso liberado', true);
+        } else {
+          errorEl.classList.remove('hidden');
+          inputEl.classList.remove('border-neutral-800');
+          inputEl.classList.add('border-red-500/70');
+        }
+      } catch (err) {
+        console.error('Erro ao validar key:', err);
+      }
+    }
+
+    // Carrega a imagem selecionada do aparelho direto no banner
+    function loadBannerImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('banner-img').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Estado dos interruptores (toggles)
+    const toggleStates = {
+      'hs-cabeca': false,
+      'hs-alto': false,
+      'hs-peito': false,
+      'antena-mao': false,
+      'esp-line': false
+    };
+
+    const toggleNames = {
+      'hs-cabeca': 'HS pescoco',
+      'hs-alto': 'Hs Alto',
+      'hs-peito': 'Hs Peito',
+      'antena-mao': 'Antena Mão',
+      'esp-line': 'Esp line'
+    };
+
+    let toastTimeout = null;
+    let pendingToggleId = null;
+
+    // Aplica visualmente o estado do card/toggle
+    function setToggleState(id, isActive, silent = false) {
+      toggleStates[id] = isActive;
+      const card = document.getElementById(`card-${id}`);
+      const btn = document.getElementById(`toggle-${id}`);
+      const knob = btn.querySelector('.knob');
+
+      btn.setAttribute('aria-checked', isActive);
+
+      if (isActive) {
+        card.classList.remove('border-cardBorder');
+        card.classList.add('border-neutral-600/80', 'bg-[#151515]');
+        btn.classList.remove('bg-toggleTrack');
+        btn.classList.add('bg-white');
+        knob.classList.remove('bg-white', 'translate-x-0');
+        knob.classList.add('bg-black', 'translate-x-[23px]');
+        if (!silent) showToast(`${toggleNames[id]}: Ativado`, true);
+      } else {
+        card.classList.remove('border-neutral-600/80', 'bg-[#151515]');
+        card.classList.add('border-cardBorder');
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-toggleTrack');
+        knob.classList.remove('bg-black', 'translate-x-[23px]');
+        knob.classList.add('bg-white', 'translate-x-0');
+        if (!silent) showToast(`${toggleNames[id]}: Desativado`, false);
+      }
+
+      updateCounter();
+    }
+
+    // Abre o modal de aviso ao tentar ativar, ou desativa direto se já estiver ligado
+    function toggleCard(id) {
+      if (!toggleStates[id]) {
+        pendingToggleId = id;
+        document.getElementById('modal-title').textContent = toggleNames[id];
+        document.getElementById('terms-modal').classList.remove('hidden');
+      } else {
+        setToggleState(id, false);
+      }
+    }
+
+    // Fecha o modal sem ativar
+    function closeTermsModal() {
+      pendingToggleId = null;
+      document.getElementById('terms-modal').classList.add('hidden');
+    }
+
+    // Confirma os termos e ativa a opção selecionada
+    function confirmActivation() {
+      if (pendingToggleId) {
+        setToggleState(pendingToggleId, true);
+      }
+      closeTermsModal();
+    }
+
+    // Atualiza contador discreto de funções ativas
+    function updateCounter() {
+      const count = Object.values(toggleStates).filter(Boolean).length;
+      const counterEl = document.getElementById('active-counter');
+      counterEl.textContent = count === 1 ? '1 ativa' : `${count} ativas`;
+      counterEl.className = count > 0 ? 'text-[11px] font-medium text-neutral-300' : 'text-[11px] font-medium text-neutral-500';
+    }
+
+    // Reseta todos os toggles
+    function resetAllToggles() {
+      Object.keys(toggleStates).forEach(id => {
+        if (toggleStates[id]) {
+          setToggleState(id, false, true);
+        }
+      });
+      showToast('Todas as funções desativadas', false);
+    }
+
+    // Ativa o Bypass Analista e desativa todas as funções automaticamente
+    function activateBypass() {
+      Object.keys(toggleStates).forEach(id => {
+        if (toggleStates[id]) {
+          setToggleState(id, false, true);
+        }
+      });
+      showToast('Bypass ativado • Funções desativadas', false);
+    }
+
+    // Atualiza o modo e a barrinha de "Puxar muito ou pouco" na aba Partidas
+    function updatePullSlider(val) {
+      const num = Number(val);
+      const badge = document.getElementById('pull-value-badge');
+      const modeLabel = document.getElementById('pull-mode-label');
+      const btnPouco = document.getElementById('btn-puxar-pouco');
+      const btnMuito = document.getElementById('btn-puxar-muito');
+
+      badge.textContent = `${num}%`;
+
+      if (num >= 50) {
+        modeLabel.textContent = 'Puxar muito';
+        btnMuito.className = 'py-2 rounded-[10px] text-[12.5px] font-semibold bg-white text-black transition-all';
+        btnPouco.className = 'py-2 rounded-[10px] text-[12.5px] font-medium text-neutral-400 hover:text-white transition-all';
+      } else {
+        modeLabel.textContent = 'Puxar pouco';
+        btnPouco.className = 'py-2 rounded-[10px] text-[12.5px] font-semibold bg-white text-black transition-all';
+        btnMuito.className = 'py-2 rounded-[10px] text-[12.5px] font-medium text-neutral-400 hover:text-white transition-all';
+      }
+    }
+
+    // Define atalho rápido para "Puxar pouco" ou "Puxar muito"
+    function setPullPreset(preset) {
+      const slider = document.getElementById('pull-slider');
+      const targetVal = preset === 'muito' ? 85 : 20;
+      slider.value = targetVal;
+      updatePullSlider(targetVal);
+      showToast(preset === 'muito' ? 'Puxar muito selecionado' : 'Puxar pouco selecionado', true);
+    }
+
+    // Estado e controle da opção "Ativar flutuante"
+    let floatingActive = false;
+
+    function toggleFloating() {
+      floatingActive = !floatingActive;
+
+      const card = document.getElementById('card-flutuante');
+      const btn = document.getElementById('toggle-flutuante');
+      const knob = btn.querySelector('.knob');
+      const bubble = document.getElementById('floating-bubble');
+
+      btn.setAttribute('aria-checked', floatingActive);
+
+      if (floatingActive) {
+        card.classList.remove('border-cardBorder');
+        card.classList.add('border-neutral-600/80', 'bg-[#151515]');
+        btn.classList.remove('bg-toggleTrack');
+        btn.classList.add('bg-white');
+        knob.classList.remove('bg-white', 'translate-x-0');
+        knob.classList.add('bg-black', 'translate-x-[23px]');
+        bubble.classList.remove('hidden');
+        showToast('Ativar flutuante: Ativado', true);
+      } else {
+        card.classList.remove('border-neutral-600/80', 'bg-[#151515]');
+        card.classList.add('border-cardBorder');
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-toggleTrack');
+        knob.classList.remove('bg-black', 'translate-x-[23px]');
+        knob.classList.add('bg-white', 'translate-x-0');
+        bubble.classList.add('hidden');
+        showToast('Ativar flutuante: Desativado', false);
+      }
+    }
+
+    // Exibe notificação flutuante sutil
+    function showToast(message, isActive) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const toastDot = document.getElementById('toast-dot');
+
+      toastText.textContent = message;
+      toastDot.className = isActive ? 'w-2 h-2 rounded-full bg-white' : 'w-2 h-2 rounded-full bg-neutral-500';
+
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 1800);
+    }
+
+    // Alterna entre as abas da barra inferior
+    function switchTab(tabName) {
+      const tabs = ['funcoes', 'partidas', 'config'];
+
+      tabs.forEach(t => {
+        const section = document.getElementById(`tab-${t}`);
+        const navBtn = document.getElementById(`nav-${t}`);
+
+        if (t === tabName) {
+          section.classList.remove('hidden');
+          navBtn.classList.remove('bg-transparent', 'text-textMuted', 'hover:text-neutral-300');
+          navBtn.classList.add('bg-navPill', 'text-white');
+          navBtn.querySelector('span').classList.replace('font-medium', 'font-semibold');
+        } else {
+          section.classList.add('hidden');
+          navBtn.classList.remove('bg-navPill', 'text-white');
+          navBtn.classList.add('bg-transparent', 'text-textMuted', 'hover:text-neutral-300');
+          navBtn.querySelector('span').classList.replace('font-semibold', 'font-medium');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+```
